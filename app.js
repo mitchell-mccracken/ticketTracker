@@ -9,7 +9,7 @@ const trackersController = require('./controllers/trackers.js');
 const gamesController = require('./controllers/games');
 require('dotenv').config();
 
-const port = 3000
+const port = process.env.PORT || 3000;
 let mongoDB = `mongodb://localhost:27017/ticketapp`
 mongoDB = process.env.URI_REMOTE
 // console.log(remoteDB)
