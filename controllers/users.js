@@ -32,6 +32,7 @@ users.get('/createUser', newUserPage );
 users.post('/', createUser)
 users.get('/login', userLoginPage );
 users.post('/login', userLogin);
+users.post('/getUser', getUser);
 
 users.get('/mitchRoute', mitchRoute);
 
@@ -368,6 +369,23 @@ async function editUser(req, res){
     }
 }
 
+
+async function getUser( req, res ) {
+  try {
+    const { user } = req.body;
+    if ( !user ) res.send('user not provided');
+    const userInfo = await User.findOne({ userName: user })
+      .lean()
+      .exec();
+
+    console.log(userInfo)
+    res.send(userInfo)
+    
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+}
 
 
 
