@@ -44,6 +44,11 @@ async function createTracker(req, res){
     try{
       console.log(req.body)
 
+      //bandaid for now
+      if ( !req.body.foundTickets ) {
+        req.body.foundTickets = {};
+      }
+
       // let newTracker = new Tracker(req.body)
 
 
