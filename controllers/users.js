@@ -84,7 +84,7 @@ const gameUrl = 'https://www.vividseats.com/hermes/api/v1/listings?productionId=
 async function getAllGames( req, res ) {
   console.log('------------------  ---------------');
   const games = await fetch(gameUrl);
-  console.log(games)
+  // console.log(games)
   console.log('------------------  ---------------');
   // console.log(games)
   // const parsed = await games.json();
@@ -349,7 +349,7 @@ async function deleteMany(req, res){
 async function deleteUser(req, res){
     try{
         let deletedUser = await User.findByIdAndDelete(req.body.userId);
-        console.log(deletedUser);
+        // console.log(deletedUser);
         res.sendStatus(200);
 
     } catch (error) {
@@ -361,7 +361,7 @@ async function deleteUser(req, res){
 async function editUser(req, res){
     try{
         let updatedUser = await User.findByIdAndUpdate(req.body._id, req.body.update, {new:true});
-        console.log(updatedUser);
+        // console.log(updatedUser);
         res.sendStatus(200);
     } catch (error) {
         console.log(error);
@@ -378,9 +378,10 @@ async function getUser( req, res ) {
       .lean()
       .exec();
 
-    console.log(userInfo)
+    if ( !userInfo ) res.send('user not found')
+    // console.log(userInfo)
     res.send(userInfo)
-    
+
   } catch (error) {
     console.log(error);
     res.sendStatus(400);

@@ -79,7 +79,7 @@ async function getGameTickets(req, res) {
 async function getUserTrackers( req, res ) {
   try {
     console.log('------------------ getUserGames ---------------');
-    console.log(req.body)
+    // console.log(req.body)
     const { user } = req.body;
 
     const trackers = await Tracker.find({ userName: user }).lean().exec();
@@ -90,7 +90,7 @@ async function getUserTrackers( req, res ) {
       const date = new Date(t.utcDate);
       if ( date > now ) userTrackedGames.push(t);
     } );
-    console.log(userTrackedGames)
+    // console.log(userTrackedGames)
 
     res.send(userTrackedGames)
 
