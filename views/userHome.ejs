@@ -43,11 +43,15 @@
       <div v-for="tracker of userTrackedGames" class="basic-outline">
         <button>{{tracker.gameName}}</button>
         <button @click="untrackGame(tracker._id)">Untrack Game</button>
+        <button @click="showHideTrackedTickets(tracker._id)">Tracked Tickets</button>
+        <div v-if="showTrackedTickets">
+          <div v-for="ticket of trackedTickets">
+            Section: {{ticket.d}} | Row: {{ticket.r}} | Qty: {{ticket.q}} | Price: ${{ticket.p}}
+          </div>
+        </div>
       </div>
 
     </div>
-
-
 
     <div>
       <button 
@@ -59,8 +63,6 @@
     </div>
 
     
-
-
     <div v-if="showGameTracker" class="game-tracker">
       TRACK GAME HERE
       <br>
@@ -137,6 +139,8 @@
 
         userTrackedGames: [],
         showUserTrackedGames: false,
+        showTrackedTickets: false,
+        trackedTickets: [],
 
 
       },
@@ -145,13 +149,25 @@
 
         showHideGames() {
           this.showGames = !this.showGames;
-          console.log(this.showGames);
+          // console.log(this.showGames);
+        },
+
+        showHideTrackedTickets(trackerId) {
+          this.showTrackedTickets = !this.showTrackedTickets;
+          if (this.showTrackedTickets === true) {
+            const tracker = this.userTrackedGames.find( x => x._id === trackerId);
+            this.trackedTickets = Object.values(tracker.foundTickets)
+          }
+          this.trackedTicketsTrackerId = trackerId;
+          console.log(trackerId)
+          this.$forceUpdate();
+          
         },
 
         getPensGames() {
           axios.get('/games/')
             .then( res => {
-              console.log(res.data)
+              // console.log(res.data)
               this.games = res.data.games;
             })
         },
@@ -180,6 +196,7 @@
           // console.log(userName)
           this.user = userName;
           // console.log('------------------  ---------------');
+          if ( !userName ) return;
 
           axios.post('/users/getUser', {user: userName})
           .then( res => {
@@ -205,7 +222,7 @@
           console.log(tracker);
           axios.post('/trackers/', tracker )
             .then( res => {
-              console.log(res.data)
+              // console.log(res.data)
               this.showGameTracker = false;
               this.selectedGame = '';
               this.getUserTrackers();
@@ -225,7 +242,7 @@
           document.cookie = "ticketUserName=''; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
           document.cookie = "ticketAppCook=''; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
           this.user = '';
-          console.log(document.cookie)
+          // console.log(document.cookie)
         },
 
         getUserTrackers() {
