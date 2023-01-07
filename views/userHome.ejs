@@ -10,6 +10,8 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/vue-cookies@1.8.2/vue-cookies.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+  <style></style>
 </head>
 <body>
 
@@ -44,7 +46,8 @@
         <button>{{tracker.gameName}}</button>
         <button @click="untrackGame(tracker._id)">Untrack Game</button>
         <button @click="showHideTrackedTickets(tracker._id)">Tracked Tickets</button>
-        <div v-if="showTrackedTickets">
+        <div>{{tracker.location}} - # tickets: {{tracker.numTickets}} - ${{tracker.price}}</div>
+        <div v-if="showTrackedTickets && trackedTicketsTrackerId === tracker._id.toString()">
           <div v-for="ticket of trackedTickets">
             Section: {{ticket.d}} | Row: {{ticket.r}} | Qty: {{ticket.q}} | Price: ${{ticket.p}}
           </div>
@@ -55,6 +58,7 @@
 
     <div>
       <button 
+        id="main-btn"
         @click="showHideGames()"
         v-if="user"
       >
@@ -62,8 +66,8 @@
       </button>
     </div>
 
-    
-    <div v-if="showGameTracker" class="game-tracker">
+
+    <div v-if="showGameTracker" class="game-tracker" >
       TRACK GAME HERE
       <br>
       {{ selectedGame.name }} <br>
@@ -86,7 +90,8 @@
     </div>
 
 
-    <div v-if="showGames && user" class="games" >
+
+    <div v-if="showGames && user" class="games" id="main" >
       2022-2023 Pens Games
 
       <button 
@@ -95,8 +100,6 @@
         :id="game.id" 
         @click="selectGame(game.id)"
         :class="{ selectedGame : selectedGame.id === game.id}"
-        
-
       >
         {{ game.name }} - {{ new Date(game.utcDate).toLocaleString() }}
       </button>
@@ -287,6 +290,10 @@
 
   <!-- CSS -->
   <style>
+    html, button, input, select, .basic-outline button {
+      font-family: 'Open Sans', sans-serif;
+    }
+
     .game-tracker {
       border: .1rem black solid;
       margin: .2rem;
@@ -319,7 +326,16 @@
       /* border-radius: 10px; */
       margin: .2rem;
       padding: .2rem;
-      background-color: lightslategrey;
+      background-color: rgb(235, 241, 244);
+    }
+
+    #main button, #main-btn, .basic-outline button {
+
+    padding: .25rem 1rem .25rem 1rem ;
+    border-radius: 5px;
+    /* padding: .25rem; */
+    margin-top: .25rem;
+    margin-bottom: .25rem;
     }
 
 
