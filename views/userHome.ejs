@@ -21,7 +21,7 @@
 
       <div class="left">
         <!-- <button>Home</button> -->
-        <button v-if="user" class="userName">Logged in as: {{user}}</button>
+        <button v-if="user" class="userName" style="hover:disable;">Logged in as: {{user}}</button>
         <a v-if=" !user " href="/users/login"><button>User Login</button></a>
         <a v-if="!user" href="/users/createUser"><button >Create User</button></a>
         <button v-if="user" @click="getUserTrackers()">{{ (showUserTrackedGames) ? 'Hide Tracked Games' : 'Show Tracked Games' }}</button>
@@ -37,24 +37,26 @@
 
 
     <!-- USER TRACKED GAMES WINDOW -->
-    <div 
-      v-if="showUserTrackedGames" 
-      class="user-tracked-games"
-    >
-      YOUR TRACKED GAMES
-      <div v-for="tracker of userTrackedGames" class="basic-outline">
-        <button>{{tracker.gameName}}</button>
-        <button @click="untrackGame(tracker._id)">Untrack Game</button>
-        <button @click="showHideTrackedTickets(tracker._id)">Tracked Tickets</button>
-        <div>{{tracker.location}} - # tickets: {{tracker.numTickets}} - ${{tracker.price}}</div>
-        <div v-if="showTrackedTickets && trackedTicketsTrackerId === tracker._id.toString()">
-          <div v-for="ticket of trackedTickets">
-            Section: {{ticket.d}} | Row: {{ticket.r}} | Qty: {{ticket.q}} | Price: ${{ticket.p}}
+    <transition>
+      <div 
+        v-if="showUserTrackedGames" 
+        class="user-tracked-games"
+      >
+        YOUR TRACKED GAMES
+        <div v-for="tracker of userTrackedGames" class="basic-outline">
+          <button>{{tracker.gameName}}</button>
+          <button @click="untrackGame(tracker._id)">Untrack Game</button>
+          <button @click="showHideTrackedTickets(tracker._id)">Tracked Tickets</button>
+          <div>{{new Date(tracker.utcDate).toLocaleString()}}</div>
+          <div>{{tracker.location}} - # tickets: {{tracker.numTickets}} - ${{tracker.price}}</div>
+          <div v-if="showTrackedTickets && trackedTicketsTrackerId === tracker._id.toString()">
+            <div v-for="ticket of trackedTickets">
+              Section: {{ticket.d}} | Row: {{ticket.r}} | Qty: {{ticket.q}} | Price: ${{ticket.p}}
+            </div>
           </div>
         </div>
       </div>
-
-    </div>
+    </transition>
 
     <div>
       <button 
@@ -66,45 +68,46 @@
       </button>
     </div>
 
+    <transition>
+      <div v-if="showGameTracker" class="game-tracker" >
+        TRACK GAME HERE
+        <br>
+        {{ selectedGame.name }} <br>
+        {{ new Date(selectedGame.utcDate).toLocaleString() }} <br>
+        Ticket Qty: <input v-model="ticketQty" type="number"> <br>
+        Max Price per: <input v-model="maxTicketPrice" type="number"> <br>
+        <label for="">Select what section</label>
+        <select name="section" id="" @change="setSelection($event)">
+          <option value="All">All</option>
+          <option value="Lower Bowl">Lower Bowl</option>
+          <option value="Upper Bowl">Upper Bowl</option>
+        </select> <br>
 
-    <div v-if="showGameTracker" class="game-tracker" >
-      TRACK GAME HERE
-      <br>
-      {{ selectedGame.name }} <br>
-      {{ new Date(selectedGame.utcDate).toLocaleString() }} <br>
-      Ticket Qty: <input v-model="ticketQty" type="number"> <br>
-      Max Price per: <input v-model="maxTicketPrice" type="number"> <br>
-      <label for="">Select what section</label>
-      <select name="section" id="" @change="setSelection($event)">
-        <option value="All">All</option>
-        <option value="Lower Bowl">Lower Bowl</option>
-        <option value="Upper Bowl">Upper Bowl</option>
-      </select> <br>
-
-      <button @click="trackGame()">
-        Track Game
-      </button>
-      <button @click="closeGameWindow()">
-        Close
-      </button>
-    </div>
+        <button @click="trackGame()">
+          Track Game
+        </button>
+        <button @click="closeGameWindow()">
+          Close
+        </button>
+      </div>
+    </transition>
 
 
+    <transition>
+      <div v-if="showGames && user" class="games" id="main" >
+        2022-2023 Pens Games
 
-    <div v-if="showGames && user" class="games" id="main" >
-      2022-2023 Pens Games
-
-      <button 
-        class="column"
-        v-for="game in games" 
-        :id="game.id" 
-        @click="selectGame(game.id)"
-        :class="{ selectedGame : selectedGame.id === game.id}"
-      >
-        {{ game.name }} - {{ new Date(game.utcDate).toLocaleString() }}
-      </button>
-
-    </div>
+        <button 
+          class="column"
+          v-for="game in games" 
+          :id="game.id" 
+          @click="selectGame(game.id)"
+          :class="{ selectedGame : selectedGame.id === game.id}"
+        >
+          {{ game.name }} - {{ new Date(game.utcDate).toLocaleString() }}
+        </button>
+      </div>
+    </transition>
 
   </div>
 
@@ -290,6 +293,11 @@
 
   <!-- CSS -->
   <style>
+    html {
+      * {
+        color: #000000;
+      }
+    }
     html, button, input, select, .basic-outline button {
       font-family: 'Open Sans', sans-serif;
     }
@@ -361,9 +369,25 @@
     }
 
     .userName {
-      border:none;
+      border: none;
       background-color: inherit;
     }
+    .userName:hover{
+      background-color: inherit;
+    }
+
+    button:hover {
+      background-color: darkgrey;
+    }
+
+    .v-enter,
+    .v-leave-to { opacity: 0 }
+
+    .v-leave,
+    .v-enter-to { opacity: 1 }
+
+    .v-enter-active,
+    .v-leave-active { transition: opacity 500ms }
 
   </style>
   
