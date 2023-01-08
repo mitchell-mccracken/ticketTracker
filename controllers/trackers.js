@@ -90,7 +90,12 @@ async function getUserTrackers( req, res ) {
       const date = new Date(t.utcDate);
       if ( date > now ) userTrackedGames.push(t);
     } );
-    // console.log(userTrackedGames)
+
+    userTrackedGames.sort( (a,b) => {
+      const aDate = new Date(a.utcDate).getTime();
+      const bDate = new Date(b.utcDate).getTime();
+      return aDate - bDate;
+    })
 
     res.send(userTrackedGames)
 
