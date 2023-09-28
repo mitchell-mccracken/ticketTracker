@@ -16,7 +16,7 @@ const fetch = require("node-fetch");
 
 
 app.use(cookieParser());
-const uri = process.env.uri;
+const uri = process.env.URI_REMOTE;
 // let uri = "mongodb://localhost:27017/ticketapp"; 
 
 
@@ -35,6 +35,39 @@ users.post('/login', userLogin);
 users.post('/getUser', getUser);
 
 users.get('/mitchRoute', mitchRoute);
+
+users.post('/uploadGameData', uploadGameData);
+
+
+// this is used for pulling data from vivid seats and then depositing copies of it in my remote db
+async function uploadGameData( req, res ) {
+  try {
+
+    // expects items to be an array of the games
+    const { items } = req.body;
+
+    console.log('This route is purposly closed, edit code to run');
+    return;
+    
+    console.log('------------------ uploading game data ---------------');
+
+    const client = new MongoClient(uri);
+    await client.connect();
+    const database = client.db('ticketapp');
+
+    // TODO: change collection name every year
+    const collection = database.collection('games');
+
+    for ( const item of items ) {
+      console.log('------------------  ---------------');
+      console.log(item.id)
+      const res = await collection.insertOne(item);
+    }
+    
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 async function mitchRoute(req, res){
   console.log('mitch route');
